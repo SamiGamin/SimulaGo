@@ -2,6 +2,7 @@ package com.martinez.simulago.ui.calculator
 
 import android.R.attr.text
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.slider.Slider
 import com.martinez.simulago.R
 import com.martinez.simulago.databinding.FragmentCalculatorBinding
@@ -42,6 +44,17 @@ class CalculatorFragment : Fragment() {
     }
     // Estos listeners no causan problemas porque son eventos únicos
     private fun setupListeners() {
+        binding.btnViewPlan.setOnClickListener {
+            viewModel.uiState.value.amortizationTable?.let { table ->
+                if (table.isNotEmpty()) {
+                    // Navegar al Fragment de Amortización con los datos
+                    val action = CalculatorFragmentDirections.actionCalculatorToAmortization(table.toTypedArray())
+                    findNavController().navigate(action)
+                } else {
+                    Toast.makeText(context, getString(R.string.error_no_amortization_data), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
         // Volvemos a los addOnChangeListener para el tiempo real
         binding.sliderVehiclePrice.addOnChangeListener { _, value, fromUser ->
             // LA GUARDIA CLAVE: Solo notificar al ViewModel si el cambio fue hecho por el USUARIO
@@ -69,9 +82,26 @@ class CalculatorFragment : Fragment() {
         binding.btnSimulate.setOnClickListener {
             viewModel.onSimulateClicked()
         }
+        binding.btnViewPlan.setOnClickListener {
+            Log.d("NAV_DEBUG", "Botón 'Ver plan' pulsado!")
+            viewModel.uiState.value.amortizationTable?.let { table ->
+                Log.d("NAV_DEBUG", "Tabla de amortización encontrada con ${table.size} filas.")
+                if (table.isNotEmpty()) {
+                    val action = CalculatorFragmentDirections.actionCalculatorToAmortization(table.toTypedArray())
+                    findNavController().navigate(action)
+                    Log.d("NAV_DEBUG", "Navegación iniciada.")
+                }else{
+                    Log.d("NAV_DEBUG", "La tabla está vacía. No se navega.")
+                }
+            }?: run {
+                Log.d("NAV_DEBUG", "Tabla de amortización es nula. No se navega.")
+                Toast.makeText(context, getString(R.string.error_no_amortization_data), Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun observeUiState() {
+
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->

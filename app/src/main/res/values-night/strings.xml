@@ -28,4 +28,5 @@
     <string name="error_interest_rate_positive">La tasa de interés debe ser un número positivo.</string>
     <string name="error_no_amount_to_finance">El valor a financiar debe ser mayor a cero.</string>
     <string name="error_invalid_interest_rate">Formato de tasa de interés inválido.</string>
+    <string name="error_no_amortization_data">error no tabla</string>
 </resources>

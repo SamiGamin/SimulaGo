@@ -1,5 +1,7 @@
 package com.martinez.simulago.ui.calculator
 
+import com.martinez.simulago.domain.model.AmortizationEntry
+
 data class CalculatorUiState(
 
     // --- Inputs del Usuario ---
@@ -16,5 +18,7 @@ data class CalculatorUiState(
 
     // --- Control de la UI ---
     val showResults: Boolean = false,        // Para mostrar/ocultar el panel de resultados
-    val error: String? = null
+    val error: String? = null,
+
+    val amortizationTable: List<AmortizationEntry>? = null
 )

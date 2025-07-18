@@ -9,7 +9,11 @@
         android:id="@+id/navigation_calculator"
         android:name="com.martinez.simulago.ui.calculator.CalculatorFragment"
         android:label="calculator"
-        tools:layout="@layout/fragment_calculator" />
+        tools:layout="@layout/fragment_calculator" >
+        <action
+            android:id="@+id/action_calculator_to_amortization"
+            app:destination="@id/amortizationFragment" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.martinez.simulago.ui.HomeFragment"
@@ -25,4 +29,13 @@
         android:name="com.martinez.simulago.ui.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/amortizationFragment"
+        android:name="com.martinez.simulago.ui.amortization.AmortizationFragment"
+        android:label="Plan de Pagos"
+        tools:layout="@layout/fragment_amortization" >
+        <argument
+            android:name="amortizationData"
+            app:argType="com.martinez.simulago.domain.model.AmortizationEntry[]" />
+    </fragment>
 </navigation>

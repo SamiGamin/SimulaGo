@@ -1,6 +1,7 @@
 package com.martinez.simulago.ui.calculator
 
 import androidx.lifecycle.ViewModel
+import com.martinez.simulago.domain.model.AmortizationEntry
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -73,6 +74,8 @@ class CalculatorViewModel : ViewModel(){
             amountToFinance / numberOfMonths
         }
 
+        val table = generateAmortizationTable(amountToFinance, monthlyRatePercent / 100, state.loanTermInMonths, monthlyPayment)
+        
         val totalLoanCost = monthlyPayment * numberOfMonths
         val totalInterestPaid = totalLoanCost - amountToFinance
 
@@ -83,8 +86,37 @@ class CalculatorViewModel : ViewModel(){
                 totalInterestPaid = totalInterestPaid,
                 totalLoanCost = totalLoanCost,
                 showResults = if (forceShowResults) true else it.showResults,
+                amortizationTable = table,
                 error = null
             )
         }
+    }
+
+    private fun generateAmortizationTable(
+        principal: Double,
+        monthlyRateDecimal: Double,
+        termInMonths: Int,
+        monthlyPayment: Double
+    ): List<AmortizationEntry> {
+        val table = mutableListOf<AmortizationEntry>()
+        var currentBalance = principal
+
+        for (month in 1..termInMonths) {
+            val interestForMonth = currentBalance * monthlyRateDecimal
+            val principalForMonth = monthlyPayment - interestForMonth
+            val finalBalance = currentBalance - principalForMonth
+
+            table.add(
+                AmortizationEntry(
+                    monthNumber = month,
+                    monthlyPayment = monthlyPayment,
+                    principalPaid = principalForMonth,
+                    interestPaid = interestForMonth,
+                    remainingBalance = if (finalBalance < 0) 0.0 else finalBalance // Evitar saldos negativos en la última cuota
+                )
+            )
+            currentBalance = finalBalance
+        }
+        return table
     }
 }
