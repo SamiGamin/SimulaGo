@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.CalculatorFragment">
+    tools:context=".ui.calculator.CalculatorFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_bold"
-            android:text="SimulaGo"
+            android:text="@string/app_name"
             android:textAppearance="?attr/textAppearanceHeadlineSmall"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -26,7 +26,7 @@
             android:id="@+id/iv_settings_popup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="Settings"
+            android:contentDescription="settings"
             android:src="@drawable/ic_settings"
             app:layout_constraintBottom_toBottomOf="@id/tv_header_title"
             app:layout_constraintEnd_toEndOf="parent"
@@ -37,66 +37,100 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="Hello, welcome"
+            android:text="@string/header_greeting"
             android:textAppearance="?attr/textAppearanceTitleLarge"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_header_title" />
+
         <TextView
             android:id="@+id/tv_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Simulate your next loan"
+            android:text="@string/header_subtitle"
             android:textAppearance="?attr/textAppearanceBodyLarge"
             android:textColor="?attr/colorOnSurfaceVariant"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_greeting" />
+
         <TextView
-            android:id="@+id/label_loan_amount"
+            android:id="@+id/label_vehicle_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Loan Amount"
+            android:text="@string/label_vehicle_price"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_subtitle" />
+
         <TextView
-            android:id="@+id/tv_loan_amount_value"
+            android:id="@+id/tv_vehicle_price_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="$10,000"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/label_loan_amount" />
+            app:layout_constraintTop_toTopOf="@id/label_vehicle_price" />
 
         <com.google.android.material.slider.Slider
-            android:id="@+id/slider_loan_amount"
+            android:id="@+id/slider_vehicle_price"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:valueFrom="1000"
-            android:valueTo="100000"
-            android:stepSize="1000"
-            android:value="10000"
-            app:layout_constraintStart_toStartOf="parent"
+            android:stepSize="100000"
+            android:value="80000000"
+            android:valueFrom="30000000"
+            android:valueTo="250000000"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/label_loan_amount" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/label_vehicle_price" />
 
+        <TextView
+            android:id="@+id/label_down_payment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/label_down_payment"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/slider_vehicle_price" />
+
+        <TextView
+            android:id="@+id/tv_down_payment_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="$5,000"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/label_down_payment" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/slider_down_payment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:stepSize="100000"
+            android:value="30000000"
+            android:valueFrom="0"
+            android:valueTo="150000000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/label_down_payment" />
 
         <TextView
             android:id="@+id/label_loan_term"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Loan Term (months)"
+            android:text="@string/label_loan_term"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/slider_loan_amount" />
+            app:layout_constraintTop_toBottomOf="@id/slider_down_payment" />
 
         <TextView
             android:id="@+id/tv_loan_term_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="36"
+            android:text="48"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/label_loan_term" />
@@ -106,13 +140,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:valueFrom="12"
-            android:valueTo="120"
             android:stepSize="1"
-            android:value="36"
-            app:layout_constraintStart_toStartOf="parent"
+            android:value="48"
+            android:valueFrom="12"
+            android:valueTo="84"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/label_loan_term" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_loan_term" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_interest_rate"
@@ -120,9 +154,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:hint="Annual Interest Rate (%)"
-            app:layout_constraintStart_toStartOf="parent"
+            android:hint="@string/hint_interest_rate"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/slider_loan_term">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -138,12 +172,12 @@
             android:id="@+id/btn_simulate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Simulate Now!"
+            android:layout_marginTop="32dp"
             android:paddingTop="14dp"
             android:paddingBottom="14dp"
-            android:layout_marginTop="32dp"
-            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/button_simulate"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/til_interest_rate" />
 
 
@@ -153,43 +187,102 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
             android:background="@drawable/bg_card_gradient"
             android:visibility="gone"
-            tools:visibility="visible"
-            app:layout_constraintStart_toStartOf="parent"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_simulate">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_simulate"
+            tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="vertical"
-                android:padding="24dp"
-                android:gravity="center">
+                android:padding="24dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Your monthly payment would be:"
+                    android:text="@string/result_monthly_payment_label"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="?attr/colorOnSurfaceVariant"/>
+                    android:textColor="?attr/colorOnSurfaceVariant" />
 
                 <TextView
                     android:id="@+id/tv_result_payment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    tools:text="$322.67"
                     android:textAppearance="?attr/textAppearanceHeadlineMedium"
                     android:textColor="?attr/colorPrimary"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    tools:text="$322.67" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="?attr/colorOutlineVariant" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/result_total_interest_label"
+                            android:textAppearance="?attr/textAppearanceLabelMedium" />
+
+                        <TextView
+                            android:id="@+id/tv_total_interest"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
+                            android:textStyle="bold"
+                            tools:text="$4,816.12" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/result_total_loan_cost_label"
+                            android:textAppearance="?attr/textAppearanceLabelMedium" />
+
+                        <TextView
+                            android:id="@+id/tv_total_loan_cost"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
+                            android:textStyle="bold"
+                            tools:text="$24,816.12" />
+                    </LinearLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
