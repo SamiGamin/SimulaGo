@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "545636611036",
+    "firebase_url": "https://bliotecaipuc-default-rtdb.firebaseio.com",
+    "project_id": "bliotecaipuc",
+    "storage_bucket": "bliotecaipuc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:545636611036:android:03b72e75320bb91da49519",
+        "android_client_info": {
+          "package_name": "com.martinez.simulago"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAudypu2Q2f3msslB19ngX7zD79DRQZqA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
