@@ -23,7 +23,16 @@ class AmortizationFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val simulationName = args.simulationName
 
+
+        if (simulationName != null && simulationName.isNotEmpty()) {
+            // Si venimos de Home, usamos el nombre de la simulación
+            binding.tvTitle.text = "Detalles Plan: $simulationName"
+        } else {
+            // Si venimos de la Calculadora (sin nombre), usamos el título genérico
+            binding.tvTitle.text = "Plan de Pagos Detallado"
+        }
         val amortizationList = args.amortizationData.toList()
         val adapter = AmortizationAdapter(amortizationList)
         binding.rvAmortization.layoutManager = LinearLayoutManager(context)

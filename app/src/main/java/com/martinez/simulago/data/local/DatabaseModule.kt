@@ -2,6 +2,8 @@ package com.martinez.simulago.data.local
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 
 import dagger.Module
 import dagger.Provides
@@ -21,8 +23,11 @@ object DatabaseModule {
             context,
             AppDatabase::class.java,
             "simulago_database" // Nombre del archivo de la base de datos
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
+
 
     @Provides
     @Singleton // El DAO también será singleton porque la base de datos lo es

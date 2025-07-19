@@ -8,7 +8,7 @@ import java.util.Date
 data class SavedSimulation(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val simulationName: String, // Un nombre para que el usuario la identifique
+    val simulationName: String,
     val vehiclePrice: Float,
     val downPayment: Float,
     val loanTermInMonths: Int,
@@ -17,5 +17,8 @@ data class SavedSimulation(
     val monthlyPayment: Double,
     val totalInterestPaid: Double,
     val totalLoanCost: Double,
-    val createdAt: Date = Date() // Para poder ordenarlas por fecha
+    val createdAt: Date = Date(),
+    val isActiveCredit: Boolean = false,
+//    val startDate: Date? = null,
+//    val additionalCharges: Double = 0.0
 )

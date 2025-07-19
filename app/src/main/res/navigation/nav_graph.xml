@@ -16,9 +16,13 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.martinez.simulago.ui.HomeFragment"
+        android:name="com.martinez.simulago.ui.home.HomeFragment"
         android:label="home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_amortizationFragment"
+            app:destination="@id/amortizationFragment" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_settings"
         android:name="com.martinez.simulago.ui.SettingsFragment"
@@ -37,5 +41,10 @@
         <argument
             android:name="amortizationData"
             app:argType="com.martinez.simulago.domain.model.AmortizationEntry[]" />
+        <argument
+            android:name="simulationName"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 </navigation>

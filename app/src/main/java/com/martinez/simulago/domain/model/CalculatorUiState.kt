@@ -1,6 +1,4 @@
-package com.martinez.simulago.ui.calculator
-
-import com.martinez.simulago.domain.model.AmortizationEntry
+package com.martinez.simulago.domain.model
 
 data class CalculatorUiState(
 

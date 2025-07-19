@@ -21,6 +21,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 import com.martinez.simulago.R
 import com.martinez.simulago.databinding.FragmentCalculatorBinding
+import com.martinez.simulago.domain.model.CalculatorUiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.NumberFormat

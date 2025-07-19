@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.martinez.simulago.data.local.SavedSimulation
 import com.martinez.simulago.data.local.SimulationDao
 import com.martinez.simulago.domain.model.AmortizationEntry
+import com.martinez.simulago.domain.model.CalculatorUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
