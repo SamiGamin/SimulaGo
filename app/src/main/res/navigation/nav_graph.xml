@@ -25,9 +25,9 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_settings"
-        android:name="com.martinez.simulago.ui.SettingsFragment"
+        android:name="com.martinez.simulago.ui.settigns.SettingsFragment"
         android:label="settings"
-        tools:layout="@layout/fragment_settings" />
+         />
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.martinez.simulago.ui.ProfileFragment"

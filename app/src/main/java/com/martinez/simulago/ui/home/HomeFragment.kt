@@ -1,6 +1,8 @@
 package com.martinez.simulago.ui.home
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,6 +18,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.martinez.simulago.data.local.SavedSimulation
+import com.martinez.simulago.data.remote.UpdateInfo
 import com.martinez.simulago.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -28,10 +31,6 @@ class HomeFragment : Fragment() {
     private val viewModel: HomeViewModel by viewModels()
     private lateinit var simulationAdapter: SimulationAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -109,6 +108,10 @@ class HomeFragment : Fragment() {
                     state.activeCredit?.let { activeCredit ->
                         binding.tvActiveCreditName.text =
                             "Crédito Activo: ${activeCredit.simulationName}"
+                    }
+                    state.updateAvailableInfo?.let { updateInfo ->
+                        showUpdateDialog(updateInfo)
+                        viewModel.onUpdateDialogShown() // Resetea el estado para no mostrarlo de nuevo
                     }
                 }
             }
@@ -205,6 +208,21 @@ class HomeFragment : Fragment() {
                     }
                 }
             })
+    }
+    private fun showUpdateDialog(updateInfo: UpdateInfo) {
+        val releaseNotes = updateInfo.releaseNotes.joinToString("\n• ")
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("¡Nueva Versión Disponible! (${updateInfo.latestVersionName})")
+            .setMessage("Novedades:\n• $releaseNotes")
+            .setNegativeButton("Más tarde", null)
+            .setPositiveButton("Actualizar ahora") { _, _ ->
+                // Abre el enlace de descarga en el navegador
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(updateInfo.updateUrl))
+                startActivity(intent)
+            }
+            .setCancelable(false) // Evita que el usuario lo cierre sin elegir una opción
+            .show()
     }
 
 }

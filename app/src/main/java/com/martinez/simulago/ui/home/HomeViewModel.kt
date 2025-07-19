@@ -1,9 +1,12 @@
 package com.martinez.simulago.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.martinez.simulago.BuildConfig
 import com.martinez.simulago.data.local.SavedSimulation
 import com.martinez.simulago.data.local.SimulationDao
+import com.martinez.simulago.data.remote.UpdateApiService
 import com.martinez.simulago.domain.model.AmortizationEntry
 import com.martinez.simulago.domain.model.HomeUiState
 import com.martinez.simulago.domain.usecase.GenerateAmortizationTableUseCase
@@ -22,7 +25,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val simulationDao: SimulationDao,
-    private val generateAmortizationTableUseCase: GenerateAmortizationTableUseCase
+    private val generateAmortizationTableUseCase: GenerateAmortizationTableUseCase,
+    private val updateApiService: UpdateApiService
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -46,6 +50,7 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
+        check_for_updates()
     }
     fun enterSelectionMode() {
         _uiState.update { it.copy(isInSelectionMode = true) }
@@ -76,5 +81,26 @@ class HomeViewModel @Inject constructor(
             termInMonths = simulation.loanTermInMonths,
             monthlyPayment = simulation.monthlyPayment
         )
+    }
+    fun check_for_updates() {
+        viewModelScope.launch {
+            try {
+                val remoteUpdateInfo = updateApiService.checkForUpdates()
+                val currentVersionCode = BuildConfig.VERSION_CODE
+
+                if (remoteUpdateInfo.latestVersionCode > currentVersionCode) {
+                    // ¡HAY UNA ACTUALIZACIÓN!
+                    // Necesitamos una forma de notificar a la UI.
+                    // Vamos a añadir un nuevo estado al UiState.
+                    _uiState.update { it.copy(updateAvailableInfo = remoteUpdateInfo) }
+                }
+            } catch (e: Exception) {
+                // Error de red, no hacemos nada o logueamos el error.
+                Log.e("UpdateCheck", "Error al buscar actualizaciones", e)
+            }
+        }
+    }
+    fun onUpdateDialogShown() {
+        _uiState.update { it.copy(updateAvailableInfo = null) }
     }
 }

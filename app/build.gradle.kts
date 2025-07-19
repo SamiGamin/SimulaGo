@@ -21,9 +21,13 @@ android {
         minSdk = 29
         targetSdk = 36
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildFeatures {
+        // Asegúrate de que esta línea esté presente y sea 'true'
+        buildConfig = true
     }
 
     buildTypes {
@@ -85,5 +89,13 @@ dependencies {
     val hilt_version = "2.57"
     implementation(libs.hilt.android)
     ksp("com.google.dagger:hilt-android-compiler:$hilt_version")
+
+    implementation("androidx.preference:preference-ktx:1.2.1")
+    // Retrofit & Gson
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
+    // Opcional pero recomendado: un interceptor para logging
+    implementation("com.squareup.okhttp3:logging-interceptor:5.1.0")
+
 
 }

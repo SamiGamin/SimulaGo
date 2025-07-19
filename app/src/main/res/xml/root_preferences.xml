@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <PreferenceCategory app:title="Apariencia">
+
+        <ListPreference
+            app:key="theme"
+            app:title="Tema de la aplicación"
+            app:summary="Elige cómo se ve la aplicación"
+            app:entries="@array/theme_entries"
+            app:entryValues="@array/theme_values"
+            app:defaultValue="system"
+            app:icon="@drawable/ic_theme"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Acerca de">
+
+        <Preference
+            app:key="version"
+            app:title="Versión de la aplicación"
+            app:summary="1.0.0"
+            app:icon="@drawable/ic_info"/>
+
+        <Preference
+            app:key="share"
+            app:title="Compartir aplicación"
+            app:summary="Ayúdanos a crecer compartiendo la app"
+            app:icon="@drawable/ic_share"/>
+
+    </PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>
