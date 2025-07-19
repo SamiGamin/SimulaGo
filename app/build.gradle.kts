@@ -21,7 +21,7 @@ android {
         minSdk = 29
         targetSdk = 36
         versionCode = 1
-        versionName = "0.0.1"
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -37,6 +37,18 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+    }
+    applicationVariants.all {
+        val variant = this
+        variant.outputs.all {
+            // 'this' se refiere a la salida, que es nuestro APK
+            val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+            val project = "SimulaGo" // El nombre de tu app
+            val aapt_version_code = variant.versionCode // El versionCode desde defaultConfig
+            val version_name = variant.versionName // El versionName desde defaultConfig
+            val newApkName = "$project-v$version_name-($aapt_version_code).apk"
+            output.outputFileName = newApkName
         }
     }
     compileOptions {
