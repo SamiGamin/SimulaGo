@@ -7,6 +7,7 @@ import com.martinez.simulago.domain.model.AmortizationEntry
 import java.text.NumberFormat
 import java.util.Locale
 
+@Suppress("DEPRECATION")
 class AmortizationAdapter(private val entries: List<AmortizationEntry>) : RecyclerView.Adapter<AmortizationAdapter.ViewHolder>() {
 
     private val currencyFormat = NumberFormat.getCurrencyInstance(Locale("es", "CO")).apply {

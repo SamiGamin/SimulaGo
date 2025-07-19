@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
@@ -15,13 +17,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 import com.martinez.simulago.R
 import com.martinez.simulago.databinding.FragmentCalculatorBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
-
+@Suppress("DEPRECATION")
+@AndroidEntryPoint
 class CalculatorFragment : Fragment() {
     private var _binding: FragmentCalculatorBinding? = null
     private val binding get() = _binding!!
@@ -98,6 +103,9 @@ class CalculatorFragment : Fragment() {
                 Toast.makeText(context, getString(R.string.error_no_amortization_data), Toast.LENGTH_SHORT).show()
             }
         }
+        binding.btnSaveSimulation.setOnClickListener {
+            showNameInputDialog()
+        }
     }
 
     private fun observeUiState() {
@@ -148,7 +156,52 @@ class CalculatorFragment : Fragment() {
             Toast.makeText(context, userFriendlyError, Toast.LENGTH_SHORT).show()
         }
     }
+// En CalculatorFragment.kt
 
+    private fun showNameInputDialog() {
+        val context = requireContext()
+
+        // 1. Crear el contenedor (un FrameLayout)
+        val container = FrameLayout(context)
+
+        // 2. Crear el EditText
+        val input = EditText(context).apply {
+            setSingleLine()
+            hint = "Ej. Coche Rojo" // Un hint es mejor que un mensaje largo
+        }
+
+        // 3. Definir los márgenes para el EditText dentro del contenedor
+        val params = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT
+        ).apply {
+            // Aquí está la magia: define los márgenes laterales
+            marginStart = resources.getDimensionPixelSize(R.dimen.dialog_edittext_margin_start_end)
+            marginEnd = resources.getDimensionPixelSize(R.dimen.dialog_edittext_margin_start_end)
+        }
+        input.layoutParams = params
+
+        // 4. Añadir el EditText al contenedor
+        container.addView(input)
+
+        // 5. Construir y mostrar el diálogo
+        MaterialAlertDialogBuilder(context)
+            .setTitle("Guardar Simulación")
+            .setMessage("Escribe un nombre para identificar esta simulación.")
+            // 6. ¡Añadir el CONTENEDOR al diálogo, no el EditText directamente!
+            .setView(container)
+            .setPositiveButton("Guardar") { dialog, _ ->
+                val name = input.text.toString().trim()
+                if (name.isNotEmpty()) {
+                    viewModel.onSaveSimulationClicked(name)
+                } else {
+                    Toast.makeText(context, "El nombre es obligatorio", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

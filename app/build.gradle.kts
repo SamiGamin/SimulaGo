@@ -7,6 +7,9 @@ plugins {
     id("com.google.gms.google-services")
     id("kotlin-parcelize")
     alias(libs.plugins.navigation.safeargs)
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
+
 }
 
 android {
@@ -75,4 +78,12 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.navigation.ui.ktx)
+    val room_version = "2.7.2"
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.room.ktx) // Soporte para Coroutines y Flow
+    ksp("androidx.room:room-compiler:$room_version")
+    val hilt_version = "2.57"
+    implementation(libs.hilt.android)
+    ksp("com.google.dagger:hilt-android-compiler:$hilt_version")
+
 }

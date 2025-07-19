@@ -19,6 +19,7 @@ data class CalculatorUiState(
     // --- Control de la UI ---
     val showResults: Boolean = false,        // Para mostrar/ocultar el panel de resultados
     val error: String? = null,
+    val showSaveSuccessMessage: Boolean = false,
 
     val amortizationTable: List<AmortizationEntry>? = null
 )
