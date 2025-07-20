@@ -90,9 +90,16 @@ class ManageCreditFragment : Fragment() {
                         Log.d(TAG, "observeUiState: No hay crédito activo, mostrando mensaje")
                         binding.tvNoActiveCreditMessage.isVisible = true
                         binding.rvPaymentHistory.isVisible = false
+                        binding.tvCurrentBalanceValue.isVisible = false
+                        binding.tvCreditName.isVisible = false
+                        binding.fabAddPayment.isVisible = false
+                        binding.tvCurrentBalanceLabel.isVisible = false
+                        binding.tvMonthlyPaymentValue.isVisible = false
+                        binding.tvHistoryTitle.text = "No hay crédito activo"
                     } else {
                         Log.d(TAG, "observeUiState: Crédito activo encontrado")
                         binding.tvNoActiveCreditMessage.isVisible = false
+                        binding.progressBar.isVisible = false
                         binding.rvPaymentHistory.isVisible = true
                     }
                 }
