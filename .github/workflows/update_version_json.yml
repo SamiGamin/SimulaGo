@@ -16,6 +16,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          # Le decimos que haga checkout de la rama 'master'.
+          # Si tu rama principal se llama 'main', cambia 'master' por 'main'.
+          ref: master
 
       - name: Read version info from gradle file
         id: read_version
