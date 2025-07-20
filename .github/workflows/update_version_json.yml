@@ -1,13 +1,12 @@
 name: Update Version JSON on Tag
 
-
 on:
   push:
     tags:
       - 'v*'
+
 permissions:
   contents: write
-
 
 jobs:
   update-json:
@@ -17,9 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          # Le decimos que haga checkout de la rama 'master'.
-          # Si tu rama principal se llama 'main', cambia 'master' por 'main'.
-          ref: master
+          ref: master # O 'main' si esa es tu rama principal
 
       - name: Read version info from gradle file
         id: read_version
@@ -28,8 +25,6 @@ jobs:
           VERSION_CODE=$(grep "versionCode =" app/build.gradle.kts | head -1 | awk -F '=' '{print $2}' | tr -d ' ')
           echo "Version Name found: $VERSION_NAME"
           echo "Version Code found: $VERSION_CODE"
-          
-          # 2. SINTAXIS ACTUALIZADA PARA GUARDAR VARIABLES (elimina los warnings)
           echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
           echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
 
@@ -40,8 +35,15 @@ jobs:
           LATEST_VERSION_CODE=${{ steps.read_version.outputs.version_code }}
           LATEST_VERSION_NAME=${{ steps.read_version.outputs.version_name }}
           
-          jq --argjson code "$LATEST_VERSION_CODE" --arg name "$LATEST_VERSION_NAME" \
-          '.latestVersionCode = $code | .latestVersionName = $name' \
+          PROJECT_NAME="SimulaGo"
+          NEW_UPDATE_URL="https://github.com/SamiGamin/SimulaGo/releases/download/v$LATEST_VERSION_NAME/$PROJECT_NAME-v$LATEST_VERSION_NAME-($LATEST_VERSION_CODE).apk"
+          
+          echo "Constructed new update URL: $NEW_UPDATE_URL"
+
+          jq --argjson code "$LATEST_VERSION_CODE" \
+             --arg name "$LATEST_VERSION_NAME" \
+             --arg url "$NEW_UPDATE_URL" \
+          '.latestVersionCode = $code | .latestVersionName = $name | .updateUrl = $url' \
           update_config.json > tmp.json && mv tmp.json update_config.json
           
           echo "JSON file updated:"
