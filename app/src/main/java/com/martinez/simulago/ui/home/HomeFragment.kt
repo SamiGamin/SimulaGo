@@ -435,6 +435,7 @@ class HomeFragment : Fragment() {
             .show()
     }
     private fun showDownloadProgressDialog(updateInfo: UpdateInfo) {
+        Log.d("UPDATE_DEBUG", "URL recibida en el fragmento: ${updateInfo.updateUrl}")
         Log.d(TAG, "showDownloadProgressDialog: Iniciando descarga de actualización para ${updateInfo.latestVersionName}")
         val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_update_progress, null)
         updateProgressBar = dialogView.findViewById(R.id.pbUpdateProgress)
