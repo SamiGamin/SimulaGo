@@ -12,12 +12,9 @@ import com.martinez.simulago.domain.model.HomeUiState
 import com.martinez.simulago.domain.usecase.GenerateAmortizationTableUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,17 +27,18 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+
+    // SAMINGAMIN: Tag para logs
+    private val TAG = "HomeViewModel_UpdateCheck"
+
     init {
-        // Combinamos los flows de la DB para actualizar la parte de los datos
         viewModelScope.launch {
             combine(
                 simulationDao.getAllSimulations(),
                 simulationDao.getActiveCredit()
             ) { allSimulations, activeCredit ->
-                // Creamos un estado de datos parcial
                 Pair(allSimulations, activeCredit)
             }.collect { (allSimulations, activeCredit) ->
-                // Actualizamos el _uiState con los nuevos datos, pero preservando el modo selección
                 _uiState.update { currentState ->
                     currentState.copy(
                         allSimulations = allSimulations,
@@ -52,6 +50,7 @@ class HomeViewModel @Inject constructor(
         }
         check_for_updates()
     }
+
     fun enterSelectionMode() {
         _uiState.update { it.copy(isInSelectionMode = true) }
     }
@@ -59,6 +58,7 @@ class HomeViewModel @Inject constructor(
     fun exitSelectionMode() {
         _uiState.update { it.copy(isInSelectionMode = false) }
     }
+
     fun onSetAsActiveCreditClicked(simulation: SavedSimulation) {
         viewModelScope.launch {
             simulationDao.setActiveCredit(simulation.id)
@@ -72,9 +72,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getAmortizationTableForSimulation(simulation: SavedSimulation): List<AmortizationEntry> {
-
         val monthlyRateDecimal = simulation.interestRate.toDoubleOrNull()?.div(100) ?: 0.0
-
         return generateAmortizationTableUseCase(
             principal = simulation.loanAmountToFinance,
             monthlyInterestRateDecimal = monthlyRateDecimal,
@@ -82,25 +80,41 @@ class HomeViewModel @Inject constructor(
             monthlyPayment = simulation.monthlyPayment
         )
     }
+
     fun check_for_updates() {
+        Log.d(TAG, "Iniciando la verificación de actualizaciones...")
         viewModelScope.launch {
             try {
+                Log.d(TAG, "Llamando a updateApiService.checkForUpdates()")
                 val remoteUpdateInfo = updateApiService.checkForUpdates()
+                // Log para la información completa (ya lo tenías, es útil)
+                Log.i(TAG, "Información de actualización recibida del servidor: $remoteUpdateInfo")
+
+                // Log específico para la URL de actualización para fácil verificación
+                Log.i(TAG, "URL de actualización específica recibida: ${remoteUpdateInfo.updateUrl}")
+
                 val currentVersionCode = BuildConfig.VERSION_CODE
+                Log.i(TAG, "VersionCode actual de la aplicación: $currentVersionCode")
 
                 if (remoteUpdateInfo.latestVersionCode > currentVersionCode) {
-                    // ¡HAY UNA ACTUALIZACIÓN!
-                    // Necesitamos una forma de notificar a la UI.
-                    // Vamos a añadir un nuevo estado al UiState.
+                    Log.i(TAG, "¡Actualización encontrada! Versión remota: ${remoteUpdateInfo.latestVersionCode}, Versión actual: $currentVersionCode")
+                    Log.d(TAG, "Actualizando uiState con la información de la nueva versión.")
                     _uiState.update { it.copy(updateAvailableInfo = remoteUpdateInfo) }
+                } else {
+                    Log.i(TAG, "No hay actualizaciones disponibles. Versión remota: ${remoteUpdateInfo.latestVersionCode}, Versión actual: $currentVersionCode")
+                    // Si no hay actualización o la URL es incorrecta incluso aquí,
+                    // podría ser útil limpiar `updateAvailableInfo` para evitar mostrar el diálogo.
+                    // Pero primero, confirmemos la URL.
                 }
             } catch (e: Exception) {
-                // Error de red, no hacemos nada o logueamos el error.
-                Log.e("UpdateCheck", "Error al buscar actualizaciones", e)
+                Log.e(TAG, "Error durante la verificación de actualizaciones", e)
             }
         }
     }
+
+
     fun onUpdateDialogShown() {
+        Log.d(TAG, "El diálogo de actualización ha sido mostrado, reseteando updateAvailableInfo.")
         _uiState.update { it.copy(updateAvailableInfo = null) }
     }
 }

@@ -74,14 +74,27 @@ class ManageCreditFragment : Fragment() {
 
     private fun observeUiState() {
         Log.d(TAG, "observeUiState: Observando UI State")
+
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect { state ->
-                    Log.d(TAG, "observeUiState: Nuevo estado recibido: $state")
-                    binding.tvCreditName.text = state.activeCredit?.simulationName
-                    binding.tvCurrentBalanceValue.text = formatCurrency(state.currentBalance)
-                    paymentHistoryAdapter.submitList(state.paymentHistory)
-                    binding.tvEmptyHistory.isVisible = state.paymentHistory.isEmpty()
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { uiState ->
+                    Log.d(TAG, "observeUiState: Recibiendo nuevo estado de UI")
+                    binding.progressBar.isVisible = uiState.isLoading
+                    binding.tvCurrentBalanceValue.text = formatCurrency(uiState.currentBalance)
+                    binding.tvMonthlyPaymentValue.text = formatCurrency(uiState.activeCredit?.monthlyPayment ?: 0.0)
+                    binding.tvCurrentBalanceValue.text = formatCurrency(uiState.activeCredit?.loanAmountToFinance ?: 0.0)
+
+                    paymentHistoryAdapter.submitList(uiState.paymentHistory)
+
+                    if (uiState.activeCredit == null) {
+                        Log.d(TAG, "observeUiState: No hay crédito activo, mostrando mensaje")
+                        binding.tvNoActiveCreditMessage.isVisible = true
+                        binding.rvPaymentHistory.isVisible = false
+                    } else {
+                        Log.d(TAG, "observeUiState: Crédito activo encontrado")
+                        binding.tvNoActiveCreditMessage.isVisible = false
+                        binding.rvPaymentHistory.isVisible = true
+                    }
                 }
             }
         }

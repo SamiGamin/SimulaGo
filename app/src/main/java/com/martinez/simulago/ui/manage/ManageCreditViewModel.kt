@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
@@ -38,48 +39,41 @@ class ManageCreditViewModel @Inject constructor(
     private val paymentsFlow: Flow<List<PaymentEntry>> = simulationId.flatMapLatest { id ->
         if (id > 0) paymentDao.getPaymentsForSimulation(id) else flowOf(emptyList())
     }
-    val uiState: StateFlow<ManageCreditUiState> =
-        combine(
-            creditFlow,
-            paymentsFlow
-        ) { credit, payments ->
-            // Caso 1: Aún no hemos recibido el crédito de la base de datos.
-            // Esto puede pasar al inicio o si el ID no es válido.
-            if (credit == null) {
-                // Devolvemos un estado de carga o de error, sin más cálculos.
-                return@combine ManageCreditUiState(isLoading = true)
+    val uiState: StateFlow<ManageCreditUiState> = simulationId
+        .filter { it > 0 } // 1. No hacemos nada hasta tener un ID válido (> 0)
+        .flatMapLatest { id -> // 2. Cuando tenemos un ID, empezamos a observar la DB
+            combine(
+                simulationDao.getSimulationById(id),
+                paymentDao.getPaymentsForSimulation(id)
+            ) { credit, payments ->
+                // 3. Ahora, dentro del combine, estamos seguros de que 'credit' y 'payments'
+                // corresponden al ID correcto.
+                if (credit == null) {
+                    return@combine ManageCreditUiState(isLoading = false, activeCredit = null) // Estado de error/vacío
+                }
+
+                // ... tu lógica de cálculo de saldo (que está perfecta) ...
+                val monthlyRate = credit.interestRate.toDoubleOrNull()?.div(100) ?: 0.0
+                var currentBalance = credit.loanAmountToFinance
+                val baseMonthlyPayment = credit.monthlyPayment
+
+                for (payment in payments.sortedBy { it.paymentDate }) {
+                    val interestForPeriod = currentBalance * monthlyRate
+                    val principalFromBasePayment = baseMonthlyPayment - interestForPeriod
+                    currentBalance -= (principalFromBasePayment + payment.extraToCapital)
+                }
+
+                ManageCreditUiState(
+                    activeCredit = credit,
+                    paymentHistory = payments,
+                    currentBalance = if (currentBalance < 0) 0.0 else currentBalance,
+                    isLoading = false
+                )
             }
-
-            // Si llegamos aquí, 'credit' no es nulo y podemos proceder con los cálculos.
-            val monthlyRate = credit.interestRate.toDoubleOrNull()?.div(100) ?: 0.0
-            var currentBalance = credit.loanAmountToFinance
-            val baseMonthlyPayment = credit.monthlyPayment
-
-            // Iteramos sobre los pagos para calcular el saldo pendiente actualizado.
-            // Es importante ordenar por fecha para que el cálculo sea correcto.
-            for (payment in payments.sortedBy { it.paymentDate }) {
-                // Calculamos el interés generado sobre el saldo ANTES de este pago.
-                // (Esta es una aproximación mensual. Es correcta para nuestro modelo).
-                val interestForPeriod = currentBalance * monthlyRate
-
-                // Calculamos cuánto de la cuota fija se va a capital.
-                val principalFromBasePayment = baseMonthlyPayment - interestForPeriod
-
-                // Reducimos el saldo por el capital pagado de la cuota Y el abono extra.
-                currentBalance -= (principalFromBasePayment + payment.extraToCapital)
-            }
-
-            // Finalmente, construimos el estado de la UI con todos los datos calculados.
-            ManageCreditUiState(
-                activeCredit = credit,
-                paymentHistory = payments,
-                currentBalance = if (currentBalance < 0) 0.0 else currentBalance, // Evitamos saldos negativos
-                isLoading = false
-            )
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = ManageCreditUiState(isLoading = true)
+            initialValue = ManageCreditUiState(isLoading = true) // El estado inicial es siempre 'cargando'
         )
 
     fun registerPayment(amount: Double, extraToCapital: Double, insurance: Double, notes: String?) {
