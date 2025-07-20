@@ -67,7 +67,7 @@ class HomeFragment : Fragment() {
                 }
             },
             onDeleteClicked = { simulation ->
-                showConfirmationDialog(simulation, null)
+               viewModel.deleteSimulation(simulation)
             }
         )
         binding.rvSimulations.adapter = simulationAdapter
@@ -120,7 +120,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun navigateToDetails(simulation: SavedSimulation) {
-        // Esta función encapsula la navegación a la tabla de detalles
         if (simulation.isActiveCredit) {
             val action = HomeFragmentDirections.actionNavigationHomeToManageCreditFragment(simulation.id)
             findNavController().navigate(action)
@@ -170,13 +169,11 @@ class HomeFragment : Fragment() {
             .setMessage(dialogMessage)
             .setPositiveButton("Confirmar") { _, _ ->
                 viewModel.onSetAsActiveCreditClicked(simulationToActivate)
+                viewModel.exitSelectionMode()
             }
             .setNegativeButton("Cancelar") { _, _ ->
                 viewModel.exitSelectionMode()
-
-            }
-
-            .show()
+            }.show()
     }
 
     override fun onDestroyView() {
