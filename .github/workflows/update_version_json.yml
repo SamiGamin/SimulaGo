@@ -1,21 +1,22 @@
 name: Update Version JSON on Tag
 
-# 1. Disparador (Trigger): Se ejecuta cuando se crea un nuevo tag que empieza con 'v'
+
 on:
   push:
     tags:
       - 'v*'
+permissions:
+  contents: write
+
 
 jobs:
   update-json:
-    runs-on: ubuntu-latest # 2. Entorno: Se ejecuta en una máquina virtual con Ubuntu
+    runs-on: ubuntu-latest
 
     steps:
-      # 3. Paso 1: Descargar el código del repositorio
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 4. Paso 2: Leer el versionName y versionCode del build.gradle.kts
       - name: Read version info from gradle file
         id: read_version
         run: |
@@ -23,19 +24,18 @@ jobs:
           VERSION_CODE=$(grep "versionCode =" app/build.gradle.kts | head -1 | awk -F '=' '{print $2}' | tr -d ' ')
           echo "Version Name found: $VERSION_NAME"
           echo "Version Code found: $VERSION_CODE"
-          echo "::set-output name=version_name::$VERSION_NAME"
-          echo "::set-output name=version_code::$VERSION_CODE"
+          
+          # 2. SINTAXIS ACTUALIZADA PARA GUARDAR VARIABLES (elimina los warnings)
+          echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
+          echo "version_code=$VERSION_CODE" >> $GITHUB_OUTPUT
 
-      # 5. Paso 3: Usar un script de Python para actualizar el archivo JSON
       - name: Update update_config.json
         run: |
-          pip install jq # Instalar jq, una herramienta para procesar JSON
+          pip install jq
           
-          # Obtenemos las variables del paso anterior
           LATEST_VERSION_CODE=${{ steps.read_version.outputs.version_code }}
           LATEST_VERSION_NAME=${{ steps.read_version.outputs.version_name }}
           
-          # Actualizamos el JSON usando jq
           jq --argjson code "$LATEST_VERSION_CODE" --arg name "$LATEST_VERSION_NAME" \
           '.latestVersionCode = $code | .latestVersionName = $name' \
           update_config.json > tmp.json && mv tmp.json update_config.json
@@ -43,12 +43,10 @@ jobs:
           echo "JSON file updated:"
           cat update_config.json
 
-      # 6. Paso 4: Hacer commit y push de los cambios en el JSON
       - name: Commit and push if changed
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add update_config.json
-          # Solo hacer commit si hay cambios
           git diff --staged --quiet || git commit -m "Automated: Update version to ${{ steps.read_version.outputs.version_name }}"
-          git push
+          git pus
