@@ -36,7 +36,9 @@ jobs:
           LATEST_VERSION_NAME=${{ steps.read_version.outputs.version_name }}
           
           PROJECT_NAME="SimulaGo"
-          NEW_UPDATE_URL="https://github.com/SamiGamin/SimulaGo/releases/download/v$LATEST_VERSION_NAME/$PROJECT_NAME-v$LATEST_VERSION_NAME-($LATEST_VERSION_CODE).apk"
+          NEW_UPDATE_URL="https://github.com/SamiGamin/SimulaGo/releases/download/v$LATEST_VERSION_NAME/$PROJECT_NAME-v$LATEST_VERSION_NAME-.$LATEST_VERSION_CODE.apk"
+          
+        
           
           echo "Constructed new update URL: $NEW_UPDATE_URL"
 
