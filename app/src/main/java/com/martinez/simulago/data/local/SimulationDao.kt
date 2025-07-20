@@ -33,4 +33,7 @@ interface SimulationDao {
 
     @Query("SELECT * FROM simulations WHERE isActiveCredit = 1 LIMIT 1")
     fun getActiveCredit(): Flow<SavedSimulation?>
+
+    @Query("SELECT * FROM simulations WHERE id = :id")
+    fun getSimulationById(id: Int): Flow<SavedSimulation?>
 }

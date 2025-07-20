@@ -23,6 +23,7 @@ import com.martinez.simulago.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@Suppress("DEPRECATION")
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
 
@@ -121,12 +122,8 @@ class HomeFragment : Fragment() {
     private fun navigateToDetails(simulation: SavedSimulation) {
         // Esta función encapsula la navegación a la tabla de detalles
         if (simulation.isActiveCredit) {
-            // TODO: Navegar a la pantalla de GESTIÓN
-            Toast.makeText(
-                context,
-                "Ir a GESTIONAR ${simulation.simulationName}",
-                Toast.LENGTH_SHORT
-            ).show()
+            val action = HomeFragmentDirections.actionNavigationHomeToManageCreditFragment(simulation.id)
+            findNavController().navigate(action)
         } else {
             val table = viewModel.getAmortizationTableForSimulation(simulation)
             val action = HomeFragmentDirections.actionNavigationHomeToAmortizationFragment(
@@ -148,15 +145,9 @@ class HomeFragment : Fragment() {
         }
 
         binding.btnManageCredit.setOnClickListener {
-            // Aquí irá la navegación a la futura pantalla de gestión
-            val activeCredit = viewModel.uiState.value.activeCredit
-            if (activeCredit != null) {
-                // Navegar a la pantalla de gestión
-                Toast.makeText(
-                    context,
-                    "Navegando a gestionar ${activeCredit.simulationName}",
-                    Toast.LENGTH_SHORT
-                ).show()
+            viewModel.uiState.value.activeCredit?.let { activeCredit ->
+                val action = HomeFragmentDirections.actionNavigationHomeToManageCreditFragment(activeCredit.id)
+                findNavController().navigate(action)
             }
         }
     }

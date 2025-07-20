@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph.xml"
-    app:startDestination="@id/navigation_calculator">
+    app:startDestination="@id/navigation_home">
 
     <fragment
         android:id="@+id/navigation_calculator"
@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_navigation_home_to_amortizationFragment"
             app:destination="@id/amortizationFragment" />
+        <action
+            android:id="@+id/action_navigation_home_to_manageCreditFragment"
+            app:destination="@id/manageCreditFragment" />
     </fragment>
     <fragment
         android:id="@+id/navigation_settings"
@@ -46,5 +49,14 @@
             app:argType="string"
             app:nullable="true"
             android:defaultValue="@null" />
+    </fragment>
+    <fragment
+        android:id="@+id/manageCreditFragment"
+        android:name="com.martinez.simulago.ui.manage.ManageCreditFragment"
+        android:label="fragment_manage_credit"
+        tools:layout="@layout/fragment_manage_credit" >
+        <argument
+            android:name="simulationName"
+            app:argType="integer"/>
     </fragment>
 </navigation>

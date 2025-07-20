@@ -13,6 +13,7 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+@Suppress("DEPRECATION")
 class SimulationAdapter(
     private val onItemClicked: (SavedSimulation) -> Unit,
     private val onDeleteClicked: (SavedSimulation) -> Unit

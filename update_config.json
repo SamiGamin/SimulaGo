@@ -1,9 +1,15 @@
 {
-  "latestVersionCode": 1,
-  "latestVersionName": "1.0.1",
+  "latestVersionCode": 2,
+  "latestVersionName": "1.0.2",
   "updateUrl": "https://github.com/SamiGamin/SimulaGo/releases/",
   "releaseNotes": [
-    "¡Novedad! Ahora puedes marcar un crédito como activo.",
-    "Corregidos errores menores y mejorada la estabilidad."
-  ]
+    •
+  "Gestión de Créditos Mejorada: Ahora puedes llevar un control detallado de tu crédito activo, registrar pagos, abonos a capital y ver tu saldo pendiente actualizado."
+  •
+  "Historial de Pagos Detallado: Accede a un historial completo de todos los movimientos y pagos realizados a tu crédito activo."
+  •
+  "Cálculo de Saldo en Tiempo Real: Visualiza cómo cada pago afecta tu deuda pendiente gracias a la lógica de negocio actualizada en la gestión de tu crédito."
+  •
+  "Corrección de errores y optimizaciones en la pantalla de gestión de crédito."
+]
 }
